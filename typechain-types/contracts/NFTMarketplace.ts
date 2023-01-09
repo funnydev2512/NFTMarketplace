@@ -9,6 +9,7 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -25,15 +26,44 @@ import type {
 
 export interface NFTMarketplaceInterface extends utils.Interface {
   functions: {
+    "buyNFT(uint256)": FunctionFragment;
+    "changNFTPrice(uint256,uint256)": FunctionFragment;
+    "delistNFT(uint256)": FunctionFragment;
+    "isSold(uint256)": FunctionFragment;
     "items(uint256)": FunctionFragment;
     "listNFT(address,uint256,uint256)": FunctionFragment;
     "listingPrice()": FunctionFragment;
+    "nftPrice(uint256)": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "items" | "listNFT" | "listingPrice"
+    nameOrSignatureOrTopic:
+      | "buyNFT"
+      | "changNFTPrice"
+      | "delistNFT"
+      | "isSold"
+      | "items"
+      | "listNFT"
+      | "listingPrice"
+      | "nftPrice"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "buyNFT",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "changNFTPrice",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "delistNFT",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSold",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(
     functionFragment: "items",
     values: [PromiseOrValue<BigNumberish>]
@@ -50,13 +80,25 @@ export interface NFTMarketplaceInterface extends utils.Interface {
     functionFragment: "listingPrice",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "nftPrice",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
 
+  decodeFunctionResult(functionFragment: "buyNFT", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "changNFTPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "delistNFT", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "isSold", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "items", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "listNFT", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "listingPrice",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "nftPrice", data: BytesLike): Result;
 
   events: {};
 }
@@ -88,6 +130,27 @@ export interface NFTMarketplace extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    buyNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    changNFTPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    delistNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    isSold(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     items(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -102,14 +165,40 @@ export interface NFTMarketplace extends BaseContract {
     >;
 
     listNFT(
-      nftAddress: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _nftAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     listingPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    nftPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
+
+  buyNFT(
+    _itemId: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  changNFTPrice(
+    _itemId: PromiseOrValue<BigNumberish>,
+    _price: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  delistNFT(
+    _itemId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  isSold(
+    _itemId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   items(
     arg0: PromiseOrValue<BigNumberish>,
@@ -125,15 +214,41 @@ export interface NFTMarketplace extends BaseContract {
   >;
 
   listNFT(
-    nftAddress: PromiseOrValue<string>,
-    tokenId: PromiseOrValue<BigNumberish>,
-    price: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _nftAddress: PromiseOrValue<string>,
+    _tokenId: PromiseOrValue<BigNumberish>,
+    _price: PromiseOrValue<BigNumberish>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   listingPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
+  nftPrice(
+    _itemId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   callStatic: {
+    buyNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    changNFTPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    delistNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    isSold(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     items(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -148,46 +263,103 @@ export interface NFTMarketplace extends BaseContract {
     >;
 
     listNFT(
-      nftAddress: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
+      _nftAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     listingPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nftPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {};
 
   estimateGas: {
+    buyNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    changNFTPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    delistNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    isSold(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     items(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     listNFT(
-      nftAddress: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _nftAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     listingPrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nftPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    buyNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    changNFTPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    delistNFT(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isSold(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     items(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     listNFT(
-      nftAddress: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _nftAddress: PromiseOrValue<string>,
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _price: PromiseOrValue<BigNumberish>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     listingPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nftPrice(
+      _itemId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }
